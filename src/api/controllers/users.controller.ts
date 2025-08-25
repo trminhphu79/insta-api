@@ -1,4 +1,3 @@
-// src/api/controllers/users.controller.ts
 import { Request, Response, NextFunction } from "express";
 import * as svc from "../services/users.service";
 

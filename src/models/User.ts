@@ -17,8 +17,8 @@ import { v4 as uuid } from "uuid";
 @Table({ tableName: "users" })
 export class User extends Model<User> {
   @PrimaryKey @Default(uuid) @Column(DataType.UUID) id!: string;
-  @Unique @Column(DataType.CITEXT) username!: string;
-  @Unique @Column(DataType.CITEXT) email!: string;
+  @Unique @Column(DataType.STRING) username!: string;
+  @Unique @Column(DataType.STRING) email!: string;
   @Column(DataType.STRING) password!: string;
 
   @HasMany(() => Post) posts!: Post[];

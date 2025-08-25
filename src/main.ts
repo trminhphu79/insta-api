@@ -1,17 +1,26 @@
 import api from "./api/routes/index.routes";
-import configs from "@configs/env.config";
 import { logger } from "@logger/logger";
-import { User } from "@models/User";
+import { User, Post, PostMedia, Comment, Like, Follow } from "@models/index";
 import createServer from "./server";
 import { db } from "@services/postgres.service";
 import { redis } from "@services/redis.service";
+import { setupSwagger } from "./docs/swagger";
 
 async function bootstrapApplication() {
   const app = createServer();
-  await Promise.all([db.connect([User]), redis.connect()]);
+
+  await Promise.all([
+    db.connect([User, Post, PostMedia, Comment, Like, Follow]),
+    redis.connect(),
+  ]);
+
   await db.sync({ alter: true });
+
   await checkHealth();
+
   app.use("/api", api);
+
+  setupSwagger(app);
 
   process.on("SIGINT", shutdown);
   process.on("SIGTERM", shutdown);
