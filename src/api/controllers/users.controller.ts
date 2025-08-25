@@ -11,10 +11,21 @@ export async function create(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export async function login(req: Request, res: Response, next: NextFunction) {
+  try {
+    console.log("req.body:", req.body);
+    const u = await svc.loginUser(req.body);
+    if (!u) return res.status(404).json({ message: "Email or password is incorrect!" });
+    res.json(u);
+  } catch (e) {
+    next(e);
+  }
+}
+
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const u = await svc.getUserById(req.params.id);
-    if (!u) return res.status(404).json({ message: "NOT_FOUND" });
+    if (!u) return res.status(404).json({ message: "User not found" });
     res.json(u);
   } catch (e) {
     next(e);
@@ -28,7 +39,7 @@ export async function getByUsername(
 ) {
   try {
     const u = await svc.getUserByUsername(req.params.username);
-    if (!u) return res.status(404).json({ message: "NOT_FOUND" });
+    if (!u) return res.status(404).json({ message: "User not found" });
     res.json(u);
   } catch (e) {
     next(e);
@@ -39,7 +50,7 @@ export async function update(req: Request, res: Response, next: NextFunction) {
   try {
     const dto = svc.updateUserDto.parse(req.body);
     const u = await svc.updateUser(req.params.id, dto);
-    if (!u) return res.status(404).json({ message: "NOT_FOUND" });
+    if (!u) return res.status(404).json({ message: "User not found" });
     res.json(u);
   } catch (e) {
     next(e);
@@ -49,8 +60,8 @@ export async function update(req: Request, res: Response, next: NextFunction) {
 export async function remove(req: Request, res: Response, next: NextFunction) {
   try {
     const ok = await svc.deleteUser(req.params.id);
-    if (!ok) return res.status(404).json({ message: "NOT_FOUND" });
-    res.json({ message: "DELETED" });
+    if (!ok) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "Success" });
   } catch (e) {
     next(e);
   }

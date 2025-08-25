@@ -23,6 +23,18 @@ export async function createUser(input: z.infer<typeof createUserDto>) {
   return sanitize(user);
 }
 
+export async function loginUser(input: { email: string; password: string }) {
+  const u = await User.findOne({
+    where: { email: input.email, password: input.password },
+  });
+  return u
+    ? {
+        data: { ...sanitize(u), accessToken: "xxx", refreshToken: "xxxx" },
+        message: "Login success",
+      }
+    : null;
+}
+
 export async function getUserById(id: string) {
   const u = await User.findByPk(id);
   return u ? sanitize(u) : null;

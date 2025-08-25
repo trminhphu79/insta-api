@@ -30,7 +30,9 @@ const r = Router();
  *       409:
  *         description: Username or email already exists
  */
-r.post("/", ctrl.create);
+r.post("/register", ctrl.create);
+
+r.post("/login", ctrl.login);
 
 /**
  * @swagger
