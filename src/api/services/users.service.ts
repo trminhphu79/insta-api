@@ -3,6 +3,7 @@ import { z } from "zod";
 import { User } from "../../models/User";
 import { Follow } from "../../models/Follow";
 import { Post } from "../../models/Post";
+import { HttpError } from "@utils/http.error";
 
 export const createUserDto = z.object({
   username: z.string().min(3).max(30),
@@ -19,6 +20,12 @@ export const updateUserDto = z.object({
 });
 
 export async function createUser(input: z.infer<typeof createUserDto>) {
+  const existing = await User.findOne({ where: { email: input.email } });
+
+  if (existing) {
+    throw new HttpError(409, "Email already exists");
+  }
+
   const user = await User.create(input as any);
   return sanitize(user);
 }
